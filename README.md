@@ -88,7 +88,6 @@ Caesar-Cipher-Encryption-Tool/
 │   └── decrypt.png
 │
 ├── README.md
-└── LICENSE
 ```
 
 ---
