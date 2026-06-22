@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Caesar Cipher - Web Version</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%);
+            color: #e2e8f0;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5);
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+        
+        .header {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            padding: 2rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        
+        .header p {
+            margin: 8px 0 0;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #1e2937;
+            border-radius: 12px;
+            padding: 6px;
+            margin-bottom: 2rem;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 10px 15px -3px rgb(59 130 246 / 0.3);
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+        
+        textarea, input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            background: #0f172a;
+            color: #e2e8f0;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        textarea:focus, input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        .shift-input {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .shift-input input {
+            width: 120px;
+            min-height: auto;
+        }
+        
+        .btn {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 25px -5px rgb(59 130 246 / 0.4);
+        }
+        
+        .result {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: #0f172a;
+            border-radius: 12px;
+            border: 2px solid #334155;
+            min-height: 80px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .output-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid #334155;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Caesar Cipher</h1>
+            <p>Cyber Security Project </p>
+        </div>
+        
+        <div class="content">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab(0)">Encrypt</div>
+                <div class="tab" onclick="switchTab(1)">Decrypt</div>
+                <div class="tab" onclick="switchTab(2)">Test Roundtrip</div>
+            </div>
+            
+            <div class="input-group">
+                <label for="message">Message</label>
+                <textarea id="message" placeholder="Enter your message here..."></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label for="shift">Shift Key (1-25)</label>
+                <div class="shift-input">
+                    <input type="number" id="shift" value="3" min="1" max="25">
+                    <button onclick="randomShift()" class="btn" style="padding: 12px 20px; font-size: 1rem;">🎲 Random</button>
+                </div>
+            </div>
+            
+            <button onclick="process()" class="btn" style="width: 100%;">Process</button>
+            
+            <div id="result" style="display: none;">
+                <div class="output-label" id="result-label">Result</div>
+                <div class="result" id="result-text"></div>
+                <button onclick="copyResult()" class="btn" style="margin-top: 12px; background: #334155;">📋 Copy to Clipboard</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            © 2026 Silva M.G.N • Built with passion for Cybersecurity 🔐
+        </div>
+    </div>
+
+    <script>
+        // Caesar Cipher Functions (ported from your Python code)
+        function encrypt(text, shift) {
+            let result = "";
+            for (let char of text) {
+                if (char.match(/[A-Z]/)) {
+                    result += String.fromCharCode((char.charCodeAt(0) - 65 + shift) % 26 + 65);
+                } else if (char.match(/[a-z]/)) {
+                    result += String.fromCharCode((char.charCodeAt(0) - 97 + shift) % 26 + 97);
+                } else {
+                    result += char;
+                }
+            }
+            return result;
+        }
+        
+        function decrypt(text, shift) {
+            let result = "";
+            for (let char of text) {
+                if (char.match(/[A-Z]/)) {
+                    result += String.fromCharCode((char.charCodeAt(0) - 65 - shift + 26) % 26 + 65);
+                } else if (char.match(/[a-z]/)) {
+                    result += String.fromCharCode((char.charCodeAt(0) - 97 - shift + 26) % 26 + 97);
+                } else {
+                    result += char;
+                }
+            }
+            return result;
+        }
+        
+        let currentTab = 0; // 0: encrypt, 1: decrypt, 2: test
+        
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach((t, i) => {
+                t.classList.toggle('active', i === tab);
+            });
+            document.getElementById('result').style.display = 'none';
+        }
+        
+        function randomShift() {
+            const shift = Math.floor(Math.random() * 25) + 1;
+            document.getElementById('shift').value = shift;
+        }
+        
+        function process() {
+            const message = document.getElementById('message').value.trim();
+            const shiftInput = document.getElementById('shift').value;
+            
+            if (!message) {
+                alert("Please enter a message!");
+                return;
+            }
+            
+            const shift = parseInt(shiftInput);
+            if (isNaN(shift) || shift < 1 || shift > 25) {
+                alert("Shift must be between 1 and 25!");
+                return;
+            }
+            
+            let result = "";
+            let label = "";
+            
+            if (currentTab === 0) { // Encrypt
+                result = encrypt(message, shift);
+                label = "🔒 Encrypted Message";
+            } 
+            else if (currentTab === 1) { // Decrypt
+                result = decrypt(message, shift);
+                label = "🔓 Decrypted Message";
+            } 
+            else { // Test Roundtrip
+                const encrypted = encrypt(message, shift);
+                const decrypted = decrypt(encrypted, shift);
+                result = `Encrypted: ${encrypted}\n\nDecrypted: ${decrypted}`;
+                label = "🔄 Roundtrip Test";
+                
+                if (decrypted === message) {
+                    result += "\n\n✅ Encryption/Decryption successful!";
+                } else {
+                    result += "\n\n❌ Something went wrong.";
+                }
+            }
+            
+            document.getElementById('result-label').textContent = label;
+            document.getElementById('result-text').textContent = result;
+            document.getElementById('result').style.display = 'block';
+        }
+        
+        function copyResult() {
+            const text = document.getElementById('result-text').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('button[onclick="copyResult()"]');
+                const originalText = btn.textContent;
+                btn.textContent = "✅ Copied!";
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        }
+        
+        // Allow pressing Enter to process
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && document.getElementById('message') === document.activeElement) {
+                process();
+            }
+        });
+        
+        // Initialize
+        console.log("%cCaesar Cipher Web App Loaded Successfully!", "color: #3b82f6; font-size: 14px; font-weight: bold");
+    </script>
+</body>
+</html>
